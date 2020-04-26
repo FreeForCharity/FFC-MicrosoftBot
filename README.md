@@ -1,0 +1,2 @@
+# FFCMicrosoftBot
+Given the excellent capabilities of modern bots to help website users and the amazing offer by Microsoft for non profits for free azure credits (nonprofit.microsoft.com) Free For Charity is looking to adopt this technology for our main site (https://freeforcharity.org) our free hosting platform (https://ffchosting.org) and our client management platform running WHMCS (https://ffchosting.org/hub)
