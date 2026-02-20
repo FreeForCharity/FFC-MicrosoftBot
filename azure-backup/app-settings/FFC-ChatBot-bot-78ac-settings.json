@@ -1,0 +1,47 @@
+﻿[
+    {
+        "name":  "WEBSITE_NODE_DEFAULT_VERSION",
+        "slotSetting":  false,
+        "value":  "~14"
+    },
+    {
+        "name":  "MicrosoftAppType",
+        "slotSetting":  false,
+        "value":  "UserAssignedMSI"
+    },
+    {
+        "name":  "MicrosoftAppId",
+        "slotSetting":  false,
+        "value":  "99202ead-618d-48e9-8cbd-c83b834d8ee9"
+    },
+    {
+        "name":  "MicrosoftAppTenantId",
+        "slotSetting":  false,
+        "value":  "80c64bf2-fa5b-425c-9a5a-1fcf282d3274"
+    },
+    {
+        "name":  "ProjectName",
+        "slotSetting":  false,
+        "value":  "FFCChatbot"
+    },
+    {
+        "name":  "LanguageEndpointKey",
+        "slotSetting":  false,
+        "value":  "REDACTED-FOR-SECURITY-SEE-AZURE-PORTAL"
+    },
+    {
+        "name":  "LanguageEndpointHostName",
+        "slotSetting":  false,
+        "value":  "https://FFC-ChatBot.cognitiveservices.azure.com"
+    },
+    {
+        "name":  "EnablePreciseAnswer",
+        "slotSetting":  false,
+        "value":  "true"
+    },
+    {
+        "name":  "DisplayPreciseAnswerOnly",
+        "slotSetting":  false,
+        "value":  "false"
+    }
+]

@@ -1,0 +1,153 @@
+﻿{
+  "etag": "\"3205dd05-0000-0100-0000-689013430000\"",
+  "id": "/subscriptions/dea314c6-800f-4410-a095-415d4c83d681/resourceGroups/FFC-ChatBot/providers/Microsoft.CognitiveServices/accounts/FFC-ChatBot",
+  "identity": {
+    "principalId": "cc637949-f296-4afc-81e0-b4c74f278d0d",
+    "tenantId": "80c64bf2-fa5b-425c-9a5a-1fcf282d3274",
+    "type": "SystemAssigned",
+    "userAssignedIdentities": null
+  },
+  "kind": "TextAnalytics",
+  "location": "eastus",
+  "name": "FFC-ChatBot",
+  "properties": {
+    "abusePenalty": null,
+    "allowProjectManagement": false,
+    "allowedFqdnList": null,
+    "amlWorkspace": null,
+    "apiProperties": {
+      "aadClientId": null,
+      "aadTenantId": null,
+      "additionalProperties": null,
+      "eventHubConnectionString": null,
+      "qnaAzureSearchEndpointId": "/subscriptions/dea314c6-800f-4410-a095-415d4c83d681/resourceGroups/FFC-ChatBot/providers/Microsoft.Search/searchServices/ffcchatbot-asa2wtzul6bmew6",
+      "qnaAzureSearchEndpointKey": null,
+      "qnaRuntimeEndpoint": null,
+      "statisticsEnabled": null,
+      "storageAccountConnectionString": null,
+      "superUser": null,
+      "websiteName": null
+    },
+    "armFeatures": [
+      "Microsoft.CognitiveServices/OpenAIPreview",
+      "Microsoft.CognitiveServices/OpenAIFineTune",
+      "Microsoft.CognitiveServices/LegalTerms.TextAnalytics.TAForHealthRAITermsAccepted",
+      "Microsoft.CognitiveServices/LegalTerms.TextAnalytics.TAForPIIRAITermsAccepted",
+      "Microsoft.CognitiveServices/OpenAI.DALLE"
+    ],
+    "associatedProjects": null,
+    "callRateLimit": null,
+    "capabilities": [
+      {
+        "name": "VirtualNetworks",
+        "value": null
+      },
+      {
+        "name": "EnabledApimVnet",
+        "value": "true"
+      },
+      {
+        "name": "TrustedServices",
+        "value": "Microsoft.CognitiveServices"
+      },
+      {
+        "name": "CustomerManagedKey",
+        "value": null
+      },
+      {
+        "name": "CustomerManagedStorage",
+        "value": null
+      },
+      {
+        "name": "Cloud",
+        "value": "TextAnalytics.Healthcare,TextAnalytics.Analyze,QuestionAnswer.AllApis,LanguageService.QuestionAnsweringApis"
+      },
+      {
+        "name": "Container",
+        "value": "TextAnalytics.Healthcare,TextAnalytics.EntityV3,TextAnalytics.EntityONNX,TextAnalytics.Keyphrase,TextAnalytics.KeyphraseV2,TextAnalytics.KeyPhraseONNX,TextAnalytics.LanguageFastText,TextAnalytics.Language,TextAnalytics.LanguageV2,TextAnalytics.Sentiment,TextAnalytics.SentimentV2,TextAnalytics.SentimentV3,TextAnalytics.SentimentV3Preview,TextAnalytics.SentimentONNX,TextAnalytics.CustomNER,TextAnalytics.textanalyticsdispatcher,TextAnalytics.SummarizationFrontend,TextAnalytics.SummarizationWorker,TextAnalytics.PII,TextAnalytics.CluRuntime,TextAnalytics.CluContainer,TextAnalytics.NER"
+      }
+    ],
+    "commitmentPlanAssociations": null,
+    "customSubDomainName": "ffc-chatbot",
+    "dateCreated": "2025-08-04T01:55:13.8704862Z",
+    "defaultProject": null,
+    "deletionDate": null,
+    "disableLocalAuth": null,
+    "dynamicThrottlingEnabled": null,
+    "encryption": null,
+    "endpoint": "https://ffc-chatbot.cognitiveservices.azure.com/",
+    "endpoints": {
+      "Container": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "Conversational Language Understanding Authoring": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "ConversationalLURuntime": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "Custom Question Answering": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "Custom Question Answering Authoring": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "Custom Text Authoring": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "LUIS": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "Language": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "Language Remote MCP Server": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "QnAMaker": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "QuestionAnswering": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "Text Analytics": "https://ffc-chatbot.cognitiveservices.azure.com/",
+      "Turing": "https://ffc-chatbot.cognitiveservices.azure.com/"
+    },
+    "internalId": "c3e8352a82fa40819bbe06f0635b748e",
+    "isMigrated": false,
+    "locations": null,
+    "migrationToken": null,
+    "networkAcls": {
+      "bypass": null,
+      "defaultAction": "Allow",
+      "ipRules": [],
+      "virtualNetworkRules": []
+    },
+    "networkInjections": null,
+    "privateEndpointConnections": [],
+    "provisioningState": "Succeeded",
+    "publicNetworkAccess": "Enabled",
+    "quotaLimit": {
+      "count": null,
+      "renewalPeriod": null,
+      "rules": [
+        {
+          "count": 5000.0,
+          "dynamicThrottlingEnabled": null,
+          "key": "workflow.endpoint.postcalls",
+          "matchPatterns": [
+            {
+              "method": "*",
+              "path": "/language/:analyze-conversations"
+            }
+          ],
+          "minCount": null,
+          "renewalPeriod": 2592000.0
+        }
+      ]
+    },
+    "raiMonitorConfig": null,
+    "restore": null,
+    "restrictOutboundNetworkAccess": null,
+    "scheduledPurgeDate": null,
+    "skuChangeInfo": null,
+    "storedCompletionsDisabled": null,
+    "userOwnedStorage": null
+  },
+  "resourceGroup": "FFC-ChatBot",
+  "sku": {
+    "capacity": null,
+    "family": null,
+    "name": "F0",
+    "size": null,
+    "tier": null
+  },
+  "systemData": {
+    "createdAt": "2025-08-04T01:55:12.588089+00:00",
+    "createdBy": "TylerCarlotto@freeforcharity.org",
+    "createdByType": "User",
+    "lastModifiedAt": "2025-08-04T01:55:48.185814+00:00",
+    "lastModifiedBy": "TylerCarlotto@freeforcharity.org",
+    "lastModifiedByType": "User"
+  },
+  "tags": {},
+  "type": "Microsoft.CognitiveServices/accounts"
+}
