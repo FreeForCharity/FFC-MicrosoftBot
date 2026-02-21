@@ -109,7 +109,7 @@
         "networkRuleBypassAllowedForTasks": false,
         "networkRuleBypassOptions": "AzureServices",
         "policies": {
-          "azureADAuthenticationAsArmPolicy": {
+          "azureAdAuthenticationAsArmPolicy": {
             "status": "enabled"
           },
           "exportPolicy": {

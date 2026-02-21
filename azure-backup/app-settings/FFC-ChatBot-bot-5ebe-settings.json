@@ -1,7 +1,7 @@
 [
     {
         "name":  "WEBSITE_NODE_DEFAULT_VERSION",
-        "value": "https://ffc-chatbot.cognitiveservices.azure.com"
+        "slotSetting":  false,
         "value":  "~20"
     },
     {
@@ -32,7 +32,7 @@
     {
         "name":  "LanguageEndpointHostName",
         "slotSetting":  false,
-        "value":  "https://FFC-ChatBot.cognitiveservices.azure.com"
+        "value":  "https://ffc-chatbot.cognitiveservices.azure.com"
     },
     {
         "name":  "EnablePreciseAnswer",

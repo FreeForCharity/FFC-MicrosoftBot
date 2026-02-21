@@ -174,32 +174,31 @@ The container image has been backed up to GitHub Container Registry. To restore:
 1. Recreate the registry (choose any globally-unique ACR name): `az acr create --name <acr-name> --resource-group FFC-ChatBot --sku Basic`
 2. Configure registry credentials (preferred: managed identity / Entra ID). If you need the simplest path for a one-time restore, you can temporarily enable the admin user:
    ```bash
-  az acr update --name <acr-name> --admin-enabled true
+    az acr update --name <acr-name> --admin-enabled true
    ```
 3. Pull the backed-up image from GHCR and push to the new ACR:
    ```bash
    docker pull ghcr.io/freeforcharity/ffc-influence-ai-bot:v1
-  ACR_NAME="your-acr-name"
-  ACR_LOGIN_SERVER=$(az acr show --name $ACR_NAME --query loginServer -o tsv)
-  docker tag ghcr.io/freeforcharity/ffc-influence-ai-bot:v1 $ACR_LOGIN_SERVER/ffc-influence-ai-bot:v1
-  az acr login --name $ACR_NAME
-  docker push $ACR_LOGIN_SERVER/ffc-influence-ai-bot:v1
+    ACR_NAME="your-acr-name"
+    ACR_LOGIN_SERVER=$(az acr show --name $ACR_NAME --query loginServer -o tsv)
+    docker tag ghcr.io/freeforcharity/ffc-influence-ai-bot:v1 $ACR_LOGIN_SERVER/ffc-influence-ai-bot:v1
+    az acr login --name $ACR_NAME
+    docker push $ACR_LOGIN_SERVER/ffc-influence-ai-bot:v1
    ```
 4. Recreate the Container Instance:
-
-```bash
-# Recreate container instance (adjust image reference if registry name changed)
-az container create \
-  --resource-group FFC-ChatBot \
-  --name ffc-influence-ai-bot \
-  --image <acr-login-server>/ffc-influence-ai-bot:v1 \
-  --registry-login-server <acr-login-server> \
-  --registry-username <acr-name> \
-  --registry-password <acr-password> \
-  --cpu 1 \
-  --memory 1.5 \
-  --ports 3978
-```
+    ```bash
+    # Recreate container instance (adjust image reference if registry name changed)
+    az container create \
+      --resource-group FFC-ChatBot \
+      --name ffc-influence-ai-bot \
+      --image <acr-login-server>/ffc-influence-ai-bot:v1 \
+      --registry-login-server <acr-login-server> \
+      --registry-username <acr-name> \
+      --registry-password <acr-password> \
+      --cpu 1 \
+      --memory 1.5 \
+      --ports 3978
+    ```
 
 > **Warning:** The original container had **16,013 restarts**, indicating it was in a crash loop. Investigate and fix the underlying issue (check logs, dependencies, environment variables) before redeploying the container.
 
