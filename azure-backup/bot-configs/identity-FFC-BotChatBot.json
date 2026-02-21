@@ -1,0 +1,12 @@
+{
+  "clientId": "e1afff62-15df-4951-abb0-0981172dc691",
+  "id": "/subscriptions/dea314c6-800f-4410-a095-415d4c83d681/resourcegroups/FFC-ChatBot/providers/Microsoft.ManagedIdentity/userAssignedIdentities/FFC-BotChatBot",
+  "location": "eastus",
+  "name": "FFC-BotChatBot",
+  "principalId": "4bf6ee11-d0c4-4f30-8346-b1c74aacfbe2",
+  "resourceGroup": "FFC-ChatBot",
+  "systemData": null,
+  "tags": {},
+  "tenantId": "80c64bf2-fa5b-425c-9a5a-1fcf282d3274",
+  "type": "Microsoft.ManagedIdentity/userAssignedIdentities"
+}

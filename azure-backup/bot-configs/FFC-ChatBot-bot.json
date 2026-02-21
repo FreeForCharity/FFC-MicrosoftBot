@@ -1,0 +1,63 @@
+{
+  "etag": "\"dd03100b-0000-0200-0000-68be71780000\"",
+  "id": "/subscriptions/dea314c6-800f-4410-a095-415d4c83d681/resourceGroups/FFC-ChatBot/providers/Microsoft.BotService/botServices/FFC-ChatBot-bot",
+  "kind": "azurebot",
+  "location": "global",
+  "name": "FFC-ChatBot-bot",
+  "properties": {
+    "allSettings": null,
+    "appPasswordHint": null,
+    "botDefinition": null,
+    "cmekEncryptionStatus": "Off",
+    "cmekKeyVaultUrl": null,
+    "configuredChannels": [
+      "webchat",
+      "directline"
+    ],
+    "description": null,
+    "developerAppInsightKey": null,
+    "developerAppInsightsApiKey": null,
+    "developerAppInsightsApplicationId": null,
+    "disableLocalAuth": false,
+    "displayName": "FFC-ChatBot-bot",
+    "enabledChannels": [
+      "webchat",
+      "directline"
+    ],
+    "endpoint": "https://ffc-chatbot-bot-78ac.azurewebsites.net/api/messages",
+    "endpointVersion": "3.0",
+    "iconUrl": "https://docs.botframework.com/static/devportal/client/images/bot-framework-default.png",
+    "isAzureBotCreatedInMcsByAbs": false,
+    "isCmekEnabled": false,
+    "isDeveloperAppInsightsApiKeySet": false,
+    "isStreamingSupported": false,
+    "luisAppIds": [],
+    "luisKey": null,
+    "manifestUrl": null,
+    "mcsFederatedCredentialSubjectId": null,
+    "migrationToken": null,
+    "msaAppId": "99202ead-618d-48e9-8cbd-c83b834d8ee9",
+    "msaAppMsiResourceId": "/subscriptions/dea314c6-800f-4410-a095-415d4c83d681/resourceGroups/FFC-ChatBot/providers/Microsoft.ManagedIdentity/userAssignedIdentities/FFC-ChatBot-bot",
+    "msaAppTenantId": "80c64bf2-fa5b-425c-9a5a-1fcf282d3274",
+    "msaAppType": "UserAssignedMSI",
+    "openWithHint": null,
+    "parameters": null,
+    "privateEndpointConnections": null,
+    "provisioningState": "Succeeded",
+    "publicNetworkAccess": null,
+    "publishingCredentials": null,
+    "schemaTransformationVersion": "1.3",
+    "storageResourceId": null,
+    "tenantId": "80c64bf2-fa5b-425c-9a5a-1fcf282d3274"
+  },
+  "resourceGroup": "FFC-ChatBot",
+  "sku": {
+    "name": "S1",
+    "tier": null
+  },
+  "tags": {
+    "WebAppLinked": "true"
+  },
+  "type": "Microsoft.BotService/botServices",
+  "zones": []
+}
