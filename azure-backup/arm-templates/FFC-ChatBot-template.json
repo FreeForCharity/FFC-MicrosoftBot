@@ -1,25 +1,4 @@
-﻿az : WARNING: Export template operation completed with errors. Some resources 
-were not exported. Please see details for more information.
-At line:1 char:1
-+ az group export --name FFC-ChatBot --include-parameter-default-value  ...
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: (WARNING: Export...re information. 
-   :String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
-ERROR: The schema of resource type 'Microsoft.BotService/botServices' is not 
-available. Resources of this type will not be exported to the template.
-ERROR: Could not get resources of the type 'Microsoft.Web/sites/functions'. 
-Resources of this type will not be exported.
-ERROR: Could not get resources of the type 'Microsoft.Web/sites/certificates'. 
-Resources of this type will not be exported.
-ERROR: Could not get resources of the type 
-'Microsoft.Web/sites/sitecontainers'. Resources of this type will not be 
-exported.
-ERROR: Could not get resources of the type 
-'Microsoft.Web/sites/hybridconnection'. Resources of this type will not be 
-exported.
-{
+﻿{
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -762,3 +741,4 @@ exported.
   ],
   "variables": {}
 }
+

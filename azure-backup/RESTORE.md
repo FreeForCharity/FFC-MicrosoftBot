@@ -70,7 +70,7 @@ az deployment group create \
   --template-file azure-backup/arm-templates/FFC-ChatBot-template.json
 ```
 
-**Note:** The ARM template will prompt for parameter values. Review and accept defaults or customize as needed. Some resources (like Bot Services with specific names) may need adjusted names if the originals still exist in soft-deleted state.
+**Note:** The ARM template will prompt for parameter values. Review and accept defaults or customize as needed. Some resources (like Bot Services with specific names) may need adjusted names if the originals still exist in soft-deleted state. This template also uses several preview/future API versions, which may no longer be available at the time of restoration; if deployment fails with API version-related errors, update the affected `apiVersion` values to currently supported versions and retry.
 
 ### Step 3: Reconfigure App Settings
 
@@ -110,7 +110,7 @@ az container create \
   --name ffc-influence-ai-bot \
   --image ffcregistry.azurecr.io/ffc-influence-ai-bot:v1 \
   --cpu 1 \
-  --memory 1 \
+  --memory 1.5 \
   --ports 3978
 ```
 
@@ -132,7 +132,7 @@ Update the messaging endpoint if the web app URL changed.
 |----------|------|-----|-------------|
 | FFC-ChatBot-serverfarm-2f27ad | App Service Plan | S1 | ~$45 |
 | FFC-ChatBot-serverfarm-77b5b5 | App Service Plan | S1 | ~$45 |
-| ffc-influence-ai-bot | Container Instance | 1 CPU/1 GB | ~$21 |
+| ffc-influence-ai-bot | Container Instance | 1 CPU/1.5 GB | ~$21 |
 | Microsoft Defender for Cloud | Security | — | ~$18 |
 | ffcregistry | Container Registry | Basic | ~$3 |
 | FFC-ChatBot-bot | Bot Service | S1 | ~$0.15 |
@@ -153,7 +153,7 @@ These identities were used for bot authentication (UserAssignedMSI):
 | Identity | Client ID | Used By |
 |----------|-----------|---------|
 | FFC-ChatBot-bot | `99202ead-618d-48e9-8cbd-c83b834d8ee9` | FFC-ChatBot-bot-78ac web app |
-| FFC-BotChatBot | See `identity-FFC-BotChatBot.json` | FFC-ChatBot-bot-5ebe web app |
+| FFC-BotChatBot | `e1afff62-15df-4951-abb0-0981172dc691` | FFC-ChatBot-bot-5ebe web app |
 
 **Note:** When restoring, new managed identities will get new client IDs. Update `MicrosoftAppId` in app settings accordingly.
 
