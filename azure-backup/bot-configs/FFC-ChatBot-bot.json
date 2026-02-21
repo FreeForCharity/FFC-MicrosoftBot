@@ -24,7 +24,7 @@
       "webchat",
       "directline"
     ],
-    "endpoint": "https://FFC-ChatBot-bot-78ac.azurewebsites.net/api/messages",
+    "endpoint": "https://ffc-chatbot-bot-78ac.azurewebsites.net/api/messages",
     "endpointVersion": "3.0",
     "iconUrl": "https://docs.botframework.com/static/devportal/client/images/bot-framework-default.png",
     "isAzureBotCreatedInMcsByAbs": false,

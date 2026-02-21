@@ -113,6 +113,8 @@ az deployment group create \
 
 After the web apps are deployed, restore the application settings:
 
+> **Working directory:** The paths in the snippets below assume you are running from the repo root (the folder that contains `azure-backup/`). If you run these commands from elsewhere, update the file paths accordingly.
+
 ```powershell
 # For each web app, restore settings from backup
 $webApps = @(
@@ -201,6 +203,8 @@ az container create \
 
 > **Warning:** The original container had **16,013 restarts**, indicating it was in a crash loop. Investigate and fix the underlying issue (check logs, dependencies, environment variables) before redeploying the container.
 
+> **Note on environment variables:** The exported container config in `container/ffc-influence-ai-bot.json` shows an empty `environmentVariables` array. If the container requires configuration (connection strings, keys, bot app IDs, etc.), you will need to re-add those variables during restore. Missing env vars may have contributed to the crash loop.
+
 ### Step 5: Restore / Verify Bot Registration
 
 **Important:** The ARM template does **not** recreate the Bot Service resources. Restore them manually (Azure Portal is usually easiest), using the exported configs in `bot-configs/` as reference:
@@ -268,3 +272,9 @@ Shutting down these resources saves **~$134/month** (**~$1,600/year**) in Azure 
 ## Questions?
 
 Contact Clarke Moyer — these resources were part of the FFC Microsoft Bot initiative. See the main repo README and `FFC QnA Bot Source/README.md` for bot architecture details.
+
+---
+
+## Notes on Export Timestamps
+
+Some exported resource files include a `creationDate` (e.g., the ACR was created in August 2025). This reflects when the resource was originally created in Azure, not the date the backup was taken (February 2026).

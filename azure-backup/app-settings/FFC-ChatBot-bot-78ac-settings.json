@@ -1,7 +1,7 @@
 [
     {
         "name":  "WEBSITE_NODE_DEFAULT_VERSION",
-        "slotSetting":  false,
+        "value": "https://ffc-chatbot.cognitiveservices.azure.com"
         "value":  "~20"
     },
     {
