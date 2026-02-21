@@ -165,7 +165,7 @@ foreach ($app in $webApps) {
 |---------|---------------------|
 | `LanguageEndpointKey` | Azure Portal → Cognitive Services → `FFC-ChatBot` → Keys and Endpoint |
 
-### Step 4: Rebuild Container Image
+### Step 4: Restore Container Image to ACR
 
 The container image has been backed up to GitHub Container Registry. To restore:
 
