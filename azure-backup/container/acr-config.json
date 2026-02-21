@@ -52,14 +52,7 @@
     "tier": "Basic"
   },
   "status": null,
-  "systemData": {
-    "createdAt": "2025-08-10T00:33:02.519319+00:00",
-    "createdBy": "TylerCarlotto@freeforcharity.org",
-    "createdByType": "User",
-    "lastModifiedAt": "2025-08-10T01:43:26.293424+00:00",
-    "lastModifiedBy": "TylerCarlotto@freeforcharity.org",
-    "lastModifiedByType": "User"
-  },
+  "systemData": {},
   "tags": {
     "Project": "FFCAIChatbot"
   },
