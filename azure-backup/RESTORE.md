@@ -11,12 +11,24 @@
 
 The chatbot infrastructure was **not actively in use** but cost **~$134/month** (~$1,600/year). All resources were exported and archived here before deletion to free up Azure Sponsorship credits.
 
+### Known Issues at Time of Shutdown
+
+- **Container restart loop:** The container instance `ffc-influence-ai-bot` had accumulated **16,013 restarts**, indicating the container was continuously crashing and restarting. This should be investigated and resolved before redeploying.
+- **EOL runtimes:** Node.js ~14 and PHP 5.6 were originally configured. Backup configs have been updated to Node.js ~20 (LTS) and PHP disabled.
+- **TLS versions:** Updated from TLS 1.2 to TLS 1.3 in backup configs for current security best practices.
+
 ---
 
 ## What Was Backed Up
 
 ### ARM Template
 - `arm-templates/FFC-ChatBot-template.json` — Full resource group ARM template with all 13 resources
+
+> **Note:** The ARM template uses several preview API versions (e.g., `2024-11-01-preview`, `2025-05-01-preview`). These may no longer be available at restore time; update `apiVersion` values to currently supported versions if deployment fails.
+
+> **Note:** The `customDomainVerificationId` value in the ARM template is **subscription-specific**. If restoring to a different subscription, this value will need to be regenerated (it is auto-assigned by Azure).
+
+> **Note:** The container registry password is not included in the ARM template (exported as null for security). You must configure registry credentials manually after deployment — see Step 4 below.
 
 ### App Service Web Apps (2)
 - `app-settings/FFC-ChatBot-bot-78ac-settings.json` — App settings (secrets redacted)
@@ -34,10 +46,25 @@ The chatbot infrastructure was **not actively in use** but cost **~$134/month** 
 - `bot-configs/search-service.json` — Azure Cognitive Search (Free)
 
 ### Container Infrastructure
-- `container/ffc-influence-ai-bot.json` — Container Instance config (image: `ffcregistry.../ffc-influence-ai-bot:v1`)
+- `container/ffc-influence-ai-bot.json` — Container Instance config (metadata only — see note below)
 - `container/acr-config.json` — Container Registry (Basic) config
 - `container/acr-repositories.json` — Repository list
 - `container/acr-tags-ffc-influence-ai-bot.txt` — Image tags
+
+> **Important:** The container backup includes **metadata and configuration only**, not the actual container image binary. The Docker image `ffcregistry.../ffc-influence-ai-bot:v1` was stored in the Azure Container Registry, which will be deleted with the resource group. To preserve the image before deletion, export it first:
+>
+> ```bash
+> # Pull the image locally before deleting the registry
+> az acr login --name ffcregistry
+> docker pull ffcregistry-dzayc6hfgmbahtbj.azurecr.io/ffc-influence-ai-bot:v1
+> docker save ffcregistry-dzayc6hfgmbahtbj.azurecr.io/ffc-influence-ai-bot:v1 -o ffc-influence-ai-bot-v1.tar
+>
+> # Or import to another registry
+> az acr import --name <target-registry> \
+>   --source ffcregistry-dzayc6hfgmbahtbj.azurecr.io/ffc-influence-ai-bot:v1
+> ```
+>
+> If the registry has already been deleted, rebuild the image from the bot source code in `FFC QnA Bot Source/`. The Dockerfile (if one exists) should be in that directory; otherwise, create one based on the C# .NET QnA Maker bot project.
 
 ### Managed Identities (2)
 - `bot-configs/identity-FFC-ChatBot-bot.json`
@@ -55,6 +82,7 @@ The original bot source code is in this repo under `FFC QnA Bot Source/` (C# .NE
 1. Azure CLI installed and logged in: `az login`
 2. Active subscription with sufficient credits
 3. PowerShell 7+ recommended
+4. Docker installed (if you need to pull/push container images)
 
 ### Step 1: Recreate the Resource Group
 
@@ -70,21 +98,46 @@ az deployment group create \
   --template-file azure-backup/arm-templates/FFC-ChatBot-template.json
 ```
 
-**Note:** The ARM template will prompt for parameter values. Review and accept defaults or customize as needed. Some resources (like Bot Services with specific names) may need adjusted names if the originals still exist in soft-deleted state. This template also uses several preview/future API versions, which may no longer be available at the time of restoration; if deployment fails with API version-related errors, update the affected `apiVersion` values to currently supported versions and retry.
+**Notes:**
+- The ARM template will prompt for parameter values. Review and accept defaults or customize as needed.
+- Some resources (like Bot Services with specific names) may need adjusted names if the originals still exist in soft-deleted state.
+- The template uses several preview/future API versions (e.g., `2024-11-01-preview`, `2025-05-01-preview`). If deployment fails with API version errors, update the `apiVersion` values in the template to currently supported versions. Check available versions with: `az provider show --namespace Microsoft.ContainerInstance --query "resourceTypes[?resourceType=='containerGroups'].apiVersions" -o table`
+- The `customDomainVerificationId` in the template is subscription-specific and will be auto-regenerated by Azure if deploying to a different subscription.
 
 ### Step 3: Reconfigure App Settings
 
 After the web apps are deployed, restore the application settings:
 
 ```powershell
-# For FFC-ChatBot-bot-78ac
-$settings = Get-Content "azure-backup/app-settings/FFC-ChatBot-bot-78ac-settings.json" | ConvertFrom-Json
-foreach ($s in $settings) {
-    if ($s.value -ne "REDACTED-FOR-SECURITY-SEE-AZURE-PORTAL") {
+# For each web app, restore settings from backup
+$webApps = @(
+    @{ Name = "FFC-ChatBot-bot-78ac"; File = "azure-backup/app-settings/FFC-ChatBot-bot-78ac-settings.json" },
+    @{ Name = "FFC-ChatBot-bot-5ebe"; File = "azure-backup/app-settings/FFC-ChatBot-bot-5ebe-settings.json" }
+)
+
+foreach ($app in $webApps) {
+    $settings = Get-Content $app.File -Raw | ConvertFrom-Json
+    if (-not $settings) {
+        Write-Error "Failed to parse settings from $($app.File)"
+        continue
+    }
+
+    foreach ($s in $settings) {
+        if ([string]::IsNullOrWhiteSpace($s.name) -or [string]::IsNullOrWhiteSpace($s.value)) {
+            Write-Warning "Skipping empty setting in $($app.Name)"
+            continue
+        }
+        if ($s.value -eq "REDACTED-FOR-SECURITY-SEE-AZURE-PORTAL") {
+            Write-Warning "Skipping redacted setting '$($s.name)' — set manually in Azure Portal"
+            continue
+        }
         az webapp config appsettings set `
-          --name FFC-ChatBot-bot-78ac `
+          --name $app.Name `
           --resource-group FFC-ChatBot `
           --settings "$($s.name)=$($s.value)"
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "Failed to set '$($s.name)' on $($app.Name)"
+        }
     }
 }
 ```
@@ -100,8 +153,12 @@ foreach ($s in $settings) {
 The container image was stored in Azure Container Registry (`ffcregistry`). If the registry was deleted, you'll need to:
 
 1. Recreate the registry: `az acr create --name ffcregistry --resource-group FFC-ChatBot --sku Basic`
-2. Rebuild and push the container image from source
-3. Recreate the Container Instance using the config in `container/ffc-influence-ai-bot.json`
+2. Configure registry credentials (admin user or managed identity):
+   ```bash
+   az acr update --name ffcregistry --admin-enabled true
+   ```
+3. Rebuild and push the container image from source (see `FFC QnA Bot Source/`)
+4. Recreate the Container Instance:
 
 ```bash
 # Recreate container instance (adjust image reference if registry name changed)
@@ -109,10 +166,15 @@ az container create \
   --resource-group FFC-ChatBot \
   --name ffc-influence-ai-bot \
   --image ffcregistry.azurecr.io/ffc-influence-ai-bot:v1 \
+  --registry-login-server ffcregistry.azurecr.io \
+  --registry-username ffcregistry \
+  --registry-password <acr-password> \
   --cpu 1 \
   --memory 1.5 \
   --ports 3978
 ```
+
+> **Warning:** The original container had **16,013 restarts**, indicating it was in a crash loop. Investigate and fix the underlying issue (check logs, dependencies, environment variables) before redeploying the container.
 
 ### Step 5: Verify Bot Registration
 

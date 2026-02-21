@@ -1,4 +1,4 @@
-﻿{
+{
   "clientId": "e1afff62-15df-4951-abb0-0981172dc691",
   "id": "/subscriptions/dea314c6-800f-4410-a095-415d4c83d681/resourcegroups/FFC-ChatBot/providers/Microsoft.ManagedIdentity/userAssignedIdentities/FFC-BotChatBot",
   "location": "eastus",
