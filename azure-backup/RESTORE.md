@@ -51,20 +51,20 @@ The chatbot infrastructure was **not actively in use** but cost **~$134/month** 
 - `container/acr-repositories.json` — Repository list
 - `container/acr-tags-ffc-influence-ai-bot.txt` — Image tags
 
-> **Important:** The container backup includes **metadata and configuration only**, not the actual container image binary. The Docker image `ffcregistry.../ffc-influence-ai-bot:v1` was stored in the Azure Container Registry, which will be deleted with the resource group. To preserve the image before deletion, export it first:
->
-> ```bash
-> # Pull the image locally before deleting the registry
-> az acr login --name ffcregistry
-> docker pull ffcregistry-dzayc6hfgmbahtbj.azurecr.io/ffc-influence-ai-bot:v1
-> docker save ffcregistry-dzayc6hfgmbahtbj.azurecr.io/ffc-influence-ai-bot:v1 -o ffc-influence-ai-bot-v1.tar
->
-> # Or import to another registry
-> az acr import --name <target-registry> \
->   --source ffcregistry-dzayc6hfgmbahtbj.azurecr.io/ffc-influence-ai-bot:v1
+> **Container Image Backup:** The actual Docker image has been pushed to GitHub Container Registry:
 > ```
+> ghcr.io/freeforcharity/ffc-influence-ai-bot:v1
+> ```
+> To pull it: `docker pull ghcr.io/freeforcharity/ffc-influence-ai-bot:v1`
 >
-> If the registry has already been deleted, rebuild the image from the bot source code in `FFC QnA Bot Source/`. The Dockerfile (if one exists) should be in that directory; otherwise, create one based on the C# .NET QnA Maker bot project.
+> This is a full backup of the original ACR image (`ffcregistry-dzayc6hfgmbahtbj.azurecr.io/ffc-influence-ai-bot:v1`).
+> If you need to push it to a new Azure Container Registry:
+> ```bash
+> docker pull ghcr.io/freeforcharity/ffc-influence-ai-bot:v1
+> docker tag ghcr.io/freeforcharity/ffc-influence-ai-bot:v1 <new-registry>.azurecr.io/ffc-influence-ai-bot:v1
+> az acr login --name <new-registry>
+> docker push <new-registry>.azurecr.io/ffc-influence-ai-bot:v1
+> ```
 
 ### Managed Identities (2)
 - `bot-configs/identity-FFC-ChatBot-bot.json`
@@ -150,14 +150,20 @@ foreach ($app in $webApps) {
 
 ### Step 4: Rebuild Container Image
 
-The container image was stored in Azure Container Registry (`ffcregistry`). If the registry was deleted, you'll need to:
+The container image has been backed up to GitHub Container Registry. To restore:
 
 1. Recreate the registry: `az acr create --name ffcregistry --resource-group FFC-ChatBot --sku Basic`
 2. Configure registry credentials (admin user or managed identity):
    ```bash
    az acr update --name ffcregistry --admin-enabled true
    ```
-3. Rebuild and push the container image from source (see `FFC QnA Bot Source/`)
+3. Pull the backed-up image from GHCR and push to the new ACR:
+   ```bash
+   docker pull ghcr.io/freeforcharity/ffc-influence-ai-bot:v1
+   docker tag ghcr.io/freeforcharity/ffc-influence-ai-bot:v1 ffcregistry.azurecr.io/ffc-influence-ai-bot:v1
+   az acr login --name ffcregistry
+   docker push ffcregistry.azurecr.io/ffc-influence-ai-bot:v1
+   ```
 4. Recreate the Container Instance:
 
 ```bash
