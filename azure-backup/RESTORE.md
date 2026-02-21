@@ -219,6 +219,8 @@ When recreating, pay special attention to the bot messaging endpoint. The backup
 
 Hostnames are case-insensitive, but the path **is not**. Confirm which endpoint your bot implementation actually serves, and document/standardize it during restore.
 
+**Note on bot/web app mapping:** The backups indicate that `FFC-ChatBot-bot` and `ffc-chatbot-2025` both point at the same backing web app host (`ffc-chatbot-bot-78ac.azurewebsites.net`), but they use different Bot Service registrations (different `MicrosoftAppId` values) and different endpoint paths. During restore/troubleshooting, keep in mind that a single web app can only be configured with the credentials it actually uses at runtime.
+
 After deployment, verify bot services are registered and endpoints are correct:
 
 ```bash
