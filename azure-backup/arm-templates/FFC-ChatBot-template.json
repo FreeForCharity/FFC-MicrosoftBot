@@ -73,7 +73,7 @@
         "imageRegistryCredentials": [
           {
             "server": "[concat(parameters('registries_ffcregistry_name'), '.azurecr.io')]",
-            "username": "ffcregistry"
+            "username": "[parameters('registries_ffcregistry_name')]"
           }
         ],
         "initContainers": [],

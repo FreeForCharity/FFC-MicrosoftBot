@@ -23,7 +23,9 @@ The chatbot infrastructure was **not actively in use** but cost **~$134/month** 
 ## What Was Backed Up
 
 ### ARM Template
-- `arm-templates/FFC-ChatBot-template.json` — Full resource group ARM template with all 13 resources
+- `arm-templates/FFC-ChatBot-template.json` — Resource group ARM template for core infrastructure (App Service Plans + Web Apps, Container Instance, Container Registry, Cognitive Search, Cognitive Services, managed identities)
+
+> **Important:** The ARM template does **not** include the three Bot Service resources (`FFC-ChatBot-bot`, `FFC-BotChatBot`, `ffc-chatbot-2025`). You must recreate those separately (see Step 5).
 
 > **Note:** The ARM template uses several preview API versions (e.g., `2024-11-01-preview`, `2025-05-01-preview`). These may no longer be available at restore time; update `apiVersion` values to currently supported versions if deployment fails.
 
@@ -62,9 +64,11 @@ The chatbot infrastructure was **not actively in use** but cost **~$134/month** 
 > If you need to push it to a new Azure Container Registry:
 > ```bash
 > docker pull ghcr.io/freeforcharity/ffc-influence-ai-bot:v1
-> docker tag ghcr.io/freeforcharity/ffc-influence-ai-bot:v1 <new-registry>.azurecr.io/ffc-influence-ai-bot:v1
-> az acr login --name <new-registry>
-> docker push <new-registry>.azurecr.io/ffc-influence-ai-bot:v1
+> ACR_NAME="your-acr-name"
+> ACR_LOGIN_SERVER=$(az acr show --name $ACR_NAME --query loginServer -o tsv)
+> docker tag ghcr.io/freeforcharity/ffc-influence-ai-bot:v1 $ACR_LOGIN_SERVER/ffc-influence-ai-bot:v1
+> az acr login --name $ACR_NAME
+> docker push $ACR_LOGIN_SERVER/ffc-influence-ai-bot:v1
 > ```
 
 ### Managed Identities (2)
@@ -123,6 +127,7 @@ foreach ($app in $webApps) {
         continue
     }
 
+    $kvPairs = @()
     foreach ($s in $settings) {
         if ([string]::IsNullOrWhiteSpace($s.name) -or [string]::IsNullOrWhiteSpace($s.value)) {
             Write-Warning "Skipping empty setting in $($app.Name)"
@@ -132,13 +137,22 @@ foreach ($app in $webApps) {
             Write-Warning "Skipping redacted setting '$($s.name)' — set manually in Azure Portal"
             continue
         }
-        az webapp config appsettings set `
-          --name $app.Name `
-          --resource-group FFC-ChatBot `
-          --settings "$($s.name)=$($s.value)"
-        if ($LASTEXITCODE -ne 0) {
-            Write-Error "Failed to set '$($s.name)' on $($app.Name)"
-        }
+
+        $kvPairs += "$($s.name)=$($s.value)"
+    }
+
+    if ($kvPairs.Count -eq 0) {
+        Write-Warning "No non-redacted app settings to apply for $($app.Name)"
+        continue
+    }
+
+    az webapp config appsettings set `
+      --name $app.Name `
+      --resource-group FFC-ChatBot `
+      --settings $kvPairs
+
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "Failed to set app settings on $($app.Name)"
     }
 }
 ```
@@ -153,17 +167,19 @@ foreach ($app in $webApps) {
 
 The container image has been backed up to GitHub Container Registry. To restore:
 
-1. Recreate the registry: `az acr create --name ffcregistry --resource-group FFC-ChatBot --sku Basic`
+1. Recreate the registry (choose any globally-unique ACR name): `az acr create --name <acr-name> --resource-group FFC-ChatBot --sku Basic`
 2. Configure registry credentials (preferred: managed identity / Entra ID). If you need the simplest path for a one-time restore, you can temporarily enable the admin user:
    ```bash
-   az acr update --name ffcregistry --admin-enabled true
+    az acr update --name <acr-name> --admin-enabled true
    ```
 3. Pull the backed-up image from GHCR and push to the new ACR:
    ```bash
    docker pull ghcr.io/freeforcharity/ffc-influence-ai-bot:v1
-   docker tag ghcr.io/freeforcharity/ffc-influence-ai-bot:v1 ffcregistry.azurecr.io/ffc-influence-ai-bot:v1
-   az acr login --name ffcregistry
-   docker push ffcregistry.azurecr.io/ffc-influence-ai-bot:v1
+  ACR_NAME="your-acr-name"
+    ACR_LOGIN_SERVER=$(az acr show --name $ACR_NAME --query loginServer -o tsv)
+    docker tag ghcr.io/freeforcharity/ffc-influence-ai-bot:v1 $ACR_LOGIN_SERVER/ffc-influence-ai-bot:v1
+    az acr login --name $ACR_NAME
+    docker push $ACR_LOGIN_SERVER/ffc-influence-ai-bot:v1
    ```
 4. Recreate the Container Instance:
 
@@ -172,9 +188,9 @@ The container image has been backed up to GitHub Container Registry. To restore:
 az container create \
   --resource-group FFC-ChatBot \
   --name ffc-influence-ai-bot \
-  --image ffcregistry.azurecr.io/ffc-influence-ai-bot:v1 \
-  --registry-login-server ffcregistry.azurecr.io \
-  --registry-username ffcregistry \
+    --image <acr-login-server>/ffc-influence-ai-bot:v1 \
+    --registry-login-server <acr-login-server> \
+    --registry-username <acr-name> \
   --registry-password <acr-password> \
   --cpu 1 \
   --memory 1.5 \
@@ -183,7 +199,20 @@ az container create \
 
 > **Warning:** The original container had **16,013 restarts**, indicating it was in a crash loop. Investigate and fix the underlying issue (check logs, dependencies, environment variables) before redeploying the container.
 
-### Step 5: Verify Bot Registration
+### Step 5: Restore / Verify Bot Registration
+
+**Important:** The ARM template does **not** recreate the Bot Service resources. Restore them manually (Azure Portal is usually easiest), using the exported configs in `bot-configs/` as reference:
+
+- `bot-configs/FFC-ChatBot-bot.json`
+- `bot-configs/FFC-BotChatBot.json`
+- `bot-configs/ffc-chatbot-2025.json`
+
+When recreating, pay special attention to the bot messaging endpoint. The backups show two patterns:
+
+- `FFC-ChatBot-bot.json` uses a Bot Framework style endpoint ending in `/api/messages`.
+- `ffc-chatbot-2025.json` uses the site root (no `/api/messages`).
+
+Hostnames are case-insensitive, but the path **is not**. Confirm which endpoint your bot implementation actually serves, and document/standardize it during restore.
 
 After deployment, verify bot services are registered and endpoints are correct:
 
