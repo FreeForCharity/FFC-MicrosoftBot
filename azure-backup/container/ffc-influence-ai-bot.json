@@ -12,7 +12,7 @@
                            "environmentVariables":  [
 
                                                     ],
-                           "image":  "ffcregistry-dzayc6hfgmbahtbj.azurecr.io/ffc-influence-ai-bot:v1",
+                           "image":  "ffcregistry.azurecr.io/ffc-influence-ai-bot:v1",
                            "livenessProbe":  null,
                            "name":  "ffc-influence-ai-bot",
                            "ports":  [
@@ -46,7 +46,7 @@
                                          "identityUrl":  null,
                                          "isDelegatedIdentity":  false,
                                          "password":  null,
-                                         "server":  "ffcregistry-dzayc6hfgmbahtbj.azurecr.io",
+                                         "server":  "ffcregistry.azurecr.io",
                                          "username":  "ffcregistry"
                                      }
                                  ],

@@ -60,7 +60,7 @@ The chatbot infrastructure was **not actively in use** but cost **~$134/month** 
 > ```
 > To pull it: `docker pull ghcr.io/freeforcharity/ffc-influence-ai-bot:v1`
 >
-> This is a full backup of the original ACR image (`ffcregistry-dzayc6hfgmbahtbj.azurecr.io/ffc-influence-ai-bot:v1`).
+> This is a full backup of the original ACR image (`ffcregistry.azurecr.io/ffc-influence-ai-bot:v1`).
 > If you need to push it to a new Azure Container Registry:
 > ```bash
 > docker pull ghcr.io/freeforcharity/ffc-influence-ai-bot:v1

@@ -140,14 +140,6 @@
     "size": null,
     "tier": null
   },
-  "systemData": {
-    "createdAt": "2025-08-04T01:55:12.588089+00:00",
-    "createdBy": "TylerCarlotto@freeforcharity.org",
-    "createdByType": "User",
-    "lastModifiedAt": "2025-08-04T01:55:48.185814+00:00",
-    "lastModifiedBy": "TylerCarlotto@freeforcharity.org",
-    "lastModifiedByType": "User"
-  },
   "tags": {},
   "type": "Microsoft.CognitiveServices/accounts"
 }
